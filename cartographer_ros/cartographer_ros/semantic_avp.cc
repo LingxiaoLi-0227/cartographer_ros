@@ -126,7 +126,58 @@ int main(int argc, char *argv[])
             ROS_ERROR("fail to call service StartTrajectory!");
             return 1;
         }
-    }
+    } else {
+        std::cout << "Starting localization TASK!" << std::endl;
+
+
+        //get the history map trajectory data
+        ros::ServiceClient client = nh.serviceClient<cartographer_ros_msgs::TrajectoryQuery>(cartographer_ros::kTrajectoryQueryServiceName);
+        ros::service::waitForService(cartographer_ros::kTrajectoryQueryServiceName);
+        cartographer_ros_msgs::TrajectoryQuery srvTrajectoryQuery;
+        srvTrajectoryQuery.request.trajectory_id = 0;        
+        if (client.call(srvTrajectoryQuery)) {
+            ROS_INFO("TrajectoryQuery OK");
+            std::cout << srvTrajectoryQuery.response.status.message << std::endl;
+            std::cout << srvTrajectoryQuery.response.trajectory.size() << std::endl;
+            std::cout << srvTrajectoryQuery.response.trajectory[0] << std::endl;
+        }
+        else {
+            ROS_ERROR("Failed to call service TrajectoryQuery");
+            return 1;
+        }
+        
+        int i_Nearest = 0;
+        srvTrajectoryQuery.response.trajectory[i_Nearest].pose.position.x = 0;
+        srvTrajectoryQuery.response.trajectory[i_Nearest].pose.position.y = 0;
+        srvTrajectoryQuery.response.trajectory[i_Nearest].pose.position.z = 0;
+        srvTrajectoryQuery.response.trajectory[i_Nearest].pose.orientation.x = 0;
+        srvTrajectoryQuery.response.trajectory[i_Nearest].pose.orientation.y = 0;
+        srvTrajectoryQuery.response.trajectory[i_Nearest].pose.orientation.z = 0;
+        srvTrajectoryQuery.response.trajectory[i_Nearest].pose.orientation.w = 1;
+
+        std::cout << "Initial pose is: " << std::endl << srvTrajectoryQuery.response.trajectory[i_Nearest].pose << std::endl;
+
+        cartographer_ros_msgs::StartTrajectory srvLocalization;
+        srvLocalization.request.configuration_directory = FLAGS_configuration_directory;
+        srvLocalization.request.configuration_basename = FLAGS_configuration_basename;
+        srvLocalization.request.use_initial_pose = false;
+        // srvLocalization.request.use_initial_pose = true;
+        // srvLocalization.request.initial_pose = srvTrajectoryQuery.response.trajectory[i_Nearest].pose;
+        srvLocalization.request.relative_to_trajectory_id = 0;
+
+        bool startTrjCall = true;
+        startTrjCall = clientStartTrajectory.call(srvLocalization);
+        if (startTrjCall) {
+            ROS_INFO("StartTrajectory OK");
+            std::cout << srvLocalization.response.status.message << std::endl;
+            std::cout << srvLocalization.response.trajectory_id << std::endl;
+            std::cout << srvLocalization.response.status.code << std::endl;
+        } else {
+            ROS_INFO("Failed to call service StartTrajectory");
+            return 1;
+        }
+    } 
+
 
     ros::spin();
 

@@ -9,7 +9,7 @@
     type="cartographer_semantic_avp" args="
           -task_mapping
           -configuration_directory $(find cartographer_ros)/configuration_files
-          -configuration_basename semantic_with_odom.lua"
+          -configuration_basename semantic_mapping_with_odom.lua"
     output="screen"/>
 
   <!--发布tf-->
@@ -19,12 +19,12 @@
   <node name="cartographer_node" pkg="cartographer_ros"
       type="cartographer_node" args="
           -configuration_directory $(find cartographer_ros)/configuration_files
-          -configuration_basename semantic_with_odom.lua
+          -configuration_basename semantic_mapping_with_odom.lua
           -nostart_trajectory_with_default_topics"
       output="screen">
     <!--重映射话题-->
     <remap from="points2" to="lidar_point_cloud" />
-    <remap from="odom" to="odom_pub" />
+    <remap from="odom" to="odom" />
   </node>
 
   <node name="cartographer_occupancy_grid_node" pkg="cartographer_ros"
