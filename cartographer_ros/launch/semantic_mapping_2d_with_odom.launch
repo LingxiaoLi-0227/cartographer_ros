@@ -15,6 +15,7 @@
   <!--发布tf-->
   <node name="robot_state_publisher" pkg="robot_state_publisher"
     type="robot_state_publisher" />
+
   <!--启动建图与定位节点-->
   <node name="cartographer_node" pkg="cartographer_ros"
       type="cartographer_node" args="
@@ -24,7 +25,7 @@
       output="screen">
     <!--重映射话题-->
     <remap from="points2" to="lidar_point_cloud" />
-    <remap from="odom" to="odom" />
+    <remap from="odom" to="/odom" />
   </node>
 
   <node name="cartographer_occupancy_grid_node" pkg="cartographer_ros"

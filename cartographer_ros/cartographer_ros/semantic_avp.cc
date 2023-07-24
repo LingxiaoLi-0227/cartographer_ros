@@ -112,7 +112,7 @@ int main(int argc, char *argv[])
     ros::service::waitForService(cartographer_ros::kStartTrajectoryServiceName);
     
     if (FLAGS_task_mapping) {
-        ROS_DEBUG("start mapping task!");
+        std::cout << "Starting mapping TASK!" << std::endl;
         cartographer_ros_msgs::StartTrajectory srvMapping;
         srvMapping.request.configuration_directory = FLAGS_configuration_directory;
         srvMapping.request.configuration_basename = FLAGS_configuration_basename;

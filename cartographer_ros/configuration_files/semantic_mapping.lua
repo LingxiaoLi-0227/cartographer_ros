@@ -1,15 +1,11 @@
 include "semantic.lua"
 
 TRAJECTORY_BUILDER.pure_localization_trimmer = {
-    max_submaps_to_keep = 3,--4
+    max_submaps_to_keep = 5,--4
   }
-TRAJECTORY_BUILDER_2D.submaps.num_range_data = 30
+TRAJECTORY_BUILDER_2D.submaps.num_range_data = 40
 
 TRAJECTORY_BUILDER_2D.motion_filter.max_distance_meters = 0.1 -- 0.2
-
-POSE_GRAPH.optimize_every_n_nodes = 10
-POSE_GRAPH.constraint_builder.sampling_ratio = 0.65 
-
 
 POSE_GRAPH.optimize_every_n_nodes = 20
 POSE_GRAPH.constraint_builder.sampling_ratio = 1. 
